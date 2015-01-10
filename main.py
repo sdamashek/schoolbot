@@ -5,7 +5,7 @@ import datetime
 
 if __name__ == '__main__':
     sources = [FCPSSource(), TwitterSource("fcpsnews", r'all +schools.+will +(.+)on +(.+)'), TwitterSource("RyanLMcElveen", r'FCPS.*will(.+)(?:on|tomorrow|today)(.+)')]
-    notifiers = [IRCNotifier(("chat.freenode.net",6667), "fcpsbot", ["#fcpsbot, #tjhsst"], ["sdamashek", "jwoglom", "fwilson"]), TextNotifier(["+15713582032"])]
+    notifiers = [IRCNotifier(("chat.freenode.net",6667), "fcpsbot", ["#fcpsbot", "#tjhsst"], ["sdamashek", "jwoglom", "fwilson"]), TextNotifier(["+15713582032"])]
 
     if os.name == 'nt':
         notifiers.append(WindowsNotifier())
