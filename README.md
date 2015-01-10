@@ -11,7 +11,8 @@ Schoolbot is a bot that polls sources for FCPS school closings information, and 
 * Texting
 
 ## Libraries used
-Twitter: Tweepy
-Web: requests
-IRC: python-irc
-Texting: twilio
+* Twitter: Tweepy
+* Web: requests
+* IRC: python-irc
+* Texting: twilio
+* Date parsing: dateutil
