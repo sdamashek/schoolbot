@@ -59,3 +59,16 @@ class IRCNotifier(Notifier):
 
     def notify(self, event):
         self.events.append(event)
+
+class WindowsNotifier(Notifier):
+    def __init__(self):
+        pass
+
+    def _notify(self, event):
+        import ctypes
+        import winsound
+        winsound.PlaySound('SystemExclamation', winsound.SND_ALIAS)
+        ctypes.windll.user32.MessageBoxW(0, "FCPS will be %s on %s (%s)" % (event.title, event.date, event.description), "Update", 0)
+
+    def notify(self, event):
+        threading.Thread(target=self._notify, args=(event,)).start()

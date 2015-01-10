@@ -1,8 +1,12 @@
 from notifier import *
 from source import *
+import os
 
 sources = [FCPSSource(), TwitterSource("fcpsnews", r'all +schools.+will +(.+)on +(.+)'), TwitterSource("RyanLMcElveen", r'FCPS.*will(.+)(?:on|tomorrow|today)(.+)')]
 notifiers = [IRCNotifier(("chat.freenode.net",6667), "fcpsbot", ["#fcpsbot"])]
+
+if os.name == 'nt':
+    notifiers.append(WindowsNotifier())
 
 for source in sources:
     source.poll()

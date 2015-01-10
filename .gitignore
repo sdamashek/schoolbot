@@ -3,3 +3,4 @@ config.py
 *~
 *.pyo
 __pycache__
+.idea
