@@ -53,10 +53,9 @@ class TwitterSource(Source):
                     except ValueError:
                         d = datetime.datetime.today() + datetime.timedelta(days=1)
 
-                    pretty_date = d.strftime('%A, %B %d')
                     title = 'delayed by two hours' if t == Event.DELAY else 'closed'
                     desc = '"%s" -- @%s' % (tweet.text, self.user)
-                    self.event = Event(t, title, desc, pretty_date)
+                    self.event = Event(t, title, desc, d)
                     break
             time.sleep(30)
 
@@ -67,7 +66,7 @@ class FCPSSource(Source):
         while True:
             page = requests.get('http://www.fcps.edu/news/emerg.shtml').text
             #page = """<p><strong>Thursday, January 8 - 5 p.m. </strong></p>
-#<h3 id="c3">All  Fairfax County public schools and offices will open two hours late on Friday, January 9 (Condition 3). Central  offices will open at 10 a.m. </h3>
+#<h3 id="c3">All  Fairfax County public schools and offices will open two hours late on Monday, January 12 (Condition 3). Central  offices will open at 10 a.m. </h3>
 #<ul>"""
             for line in page.split('\n'):
                 match = re.search(r'all +fairfax +county +public +schools +(.*) +on +(.*)', line, re.IGNORECASE)
@@ -84,10 +83,9 @@ class FCPSSource(Source):
                     except ValueError:
                         d = datetime.datetime.today() + datetime.timedelta(days=1)
 
-                    pretty_date = d.strftime('%A, %B %d')
                     title = 'delayed by two hours' if t == Event.DELAY else 'closed'
                     desc = '"%s" -- fcps.edu' % line
-                    self.event = Event(t, title, desc, pretty_date)
+                    self.event = Event(t, title, desc, d)
                     break
 
             time.sleep(5)

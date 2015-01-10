@@ -1,6 +1,9 @@
 import threading
-import irc.client
 import time
+import irc.client
+from twilio.rest import TwilioRestClient
+
+from config import *
 
 class Notifier:
     def __init__(self, *args, **kwargs):
@@ -10,12 +13,13 @@ class Notifier:
         raise NotImplementedError
 
 class IRCNotifier(Notifier):
-    def __init__(self, network, nickname, channels):
+    def __init__(self, network, nickname, channels, pings=None):
         self.events = []
         self.hostname, self.port = network
         self.nickname = nickname
         self.channels = channels
         self.reactor = None
+        self.pings = pings
         threading.Thread(target=self.start, args=()).start()
 
     def start(self):
@@ -52,7 +56,9 @@ class IRCNotifier(Notifier):
                 print 'processing event %d' % e
                 print self.events
                 event = self.events[e]
-                message = "FCPS will be %s on %s (%s)" % (event.title, event.date, event.description)
+                message = "FCPS will be %s on %s (%s)" % (event.title, event.date_text, event.description)
+                if self.pings:
+                    message = ','.join(self.pings) + ': ' + message
                 for channel in self.channels:
                     connection.privmsg(channel, message)
             self.events = []
@@ -68,7 +74,25 @@ class WindowsNotifier(Notifier):
         import ctypes
         import winsound
         winsound.PlaySound('SystemExclamation', winsound.SND_ALIAS)
-        ctypes.windll.user32.MessageBoxW(0, "FCPS will be %s on %s (%s)" % (event.title, event.date, event.description), "Update", 0)
+        ctypes.windll.user32.MessageBoxW(0, "FCPS will be %s on %s (%s)" % (event.title, event.date_text, event.description), "Update", 0)
+
+    def notify(self, event):
+        threading.Thread(target=self._notify, args=(event,)).start()
+
+class TextNotifier(Notifier):
+    def __init__(self, users):
+        self.users = users
+
+    def _notify(self, event):
+        client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
+
+        for user in self.users:
+            message = client.messages.create(
+                body = "FCPS will be %s on %s (%s) -- fcpsbot" % (event.title, event.date_text, event.description),
+                to=user,
+                from_=TWILIO_NUMBER
+            )
+            print message.sid
 
     def notify(self, event):
         threading.Thread(target=self._notify, args=(event,)).start()

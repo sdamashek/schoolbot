@@ -7,6 +7,7 @@ class Event:
         self.title = title
         self.description = description
         self.date = date
+        self.date_text = self.date.strftime('%A, %B %d')
 
     def __eq__(self, other):
         return self.description == other.description and self.date == other.date and self.t == other.t and self.title == other.title
