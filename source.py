@@ -7,7 +7,6 @@ import datetime
 import tweepy
 
 from event import Event
-from config import consumer_key, consumer_secret, access_token, access_secret
 
 class Source:
 
@@ -30,6 +29,7 @@ class TwitterSource(Source):
         self.old_event = None
 
     def _poll(self):
+        from config import consumer_key, consumer_secret, access_token, access_secret
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_secret)
 
