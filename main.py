@@ -13,8 +13,6 @@ if __name__ == '__main__':
     for source in sources:
         source.poll()
 
-    #event = Event(Event.DELAY, "delayed by two hours", "ayy lmao", "January 10th, 2015")
-
     while True:
         for source in sources:
             if source.event != source.old_event:
