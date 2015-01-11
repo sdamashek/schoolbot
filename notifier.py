@@ -95,3 +95,31 @@ class TextNotifier(Notifier):
 
     def notify(self, event):
         threading.Thread(target=self._notify, args=(event,)).start()
+
+class PushbulletNotifier(Notifier):
+    def __init__(self, device=None, email=None, channel=None, client=None):
+        self.device = device
+        self.email = email
+        self.channel = channel
+        self.client = client
+
+    def _notify(self, event):
+        import requests
+        import json
+        from config import PB_ACCESS_TOKEN
+        headers = { "Content-Type" : "application/json" }
+        payload = { "type" : "note", "title" : "FCPS %s" % event.title, "body" : "FCPS will be %s on %s (%s)." % (event.title, event.date_text, event.description) }
+        if self.channel != None:
+            payload["channel_tag"] = self.channel
+        elif self.email != None:
+            payload["email"] = self.email
+        elif self.device != None:
+            payload["device_iden"] = self.device
+        elif self.client != None:
+            payload["client_iden"] = self.client
+        requests.post("https://api.pushbullet.com/v2/pushes",
+                auth=(PB_ACCESS_TOKEN, ''), data=json.dumps(payload),
+                headers=headers)
+
+    def notify(self, event):
+        threading.Thread(target=self._notify, args=(event,)).start()
