@@ -1,7 +1,5 @@
 import threading
 import time
-import irc.client
-from twilio.rest import TwilioRestClient
 
 class Notifier:
     def __init__(self, *args, **kwargs):
@@ -21,6 +19,7 @@ class IRCNotifier(Notifier):
         threading.Thread(target=self.start, args=()).start()
 
     def start(self):
+        import irc.client
         self.reactor = irc.client.Reactor()
         self.connect()
 
@@ -82,6 +81,7 @@ class TextNotifier(Notifier):
         self.users = users
 
     def _notify(self, event):
+        from twilio.rest import TwilioRestClient
         from config import ACCOUNT_SID, AUTH_TOKEN, TWILIO_NUMBER
         client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
 

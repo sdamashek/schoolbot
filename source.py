@@ -1,10 +1,8 @@
 import threading
-import requests
 import time
 import re
 import dateutil.parser as dparser
 import datetime
-import tweepy
 
 from event import Event
 
@@ -29,6 +27,7 @@ class TwitterSource(Source):
         self.old_event = None
 
     def _poll(self):
+        import tweepy
         from config import consumer_key, consumer_secret, access_token, access_secret
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_secret)
@@ -63,6 +62,7 @@ class TwitterSource(Source):
 
 class FCPSSource(Source):
     def _poll(self):
+        import requests
         while True:
             page = requests.get('http://www.fcps.edu/news/emerg.shtml').text
             #page = """<p><strong>Thursday, January 8 - 5 p.m. </strong></p>

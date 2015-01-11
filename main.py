@@ -1,7 +1,10 @@
-from notifier import *
-from source import *
 import os
 import datetime
+import time
+
+from notifier import *
+from source import *
+
 
 if __name__ == '__main__':
     sources = [FCPSSource(), TwitterSource("fcpsnews", r'all +schools.+will +(.+)on +(.+)'), TwitterSource("RyanLMcElveen", r'FCPS.*will(.+)(?:on|tomorrow|today)(.+)')]
@@ -21,3 +24,4 @@ if __name__ == '__main__':
                 if delta.days >= 0:
                     for n in notifiers:
                         n.notify(source.event)
+        time.sleep(1)
